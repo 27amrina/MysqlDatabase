@@ -155,7 +155,7 @@ const tasks = [
 
 const $ = id => document.getElementById(id);
 const engine = new MiniSQL();
-const APP_VERSION = '1.2';
+const APP_VERSION = '1.4';
 const STORAGE_NS = 'sql_kependudukan_v1_2';
 const LEGACY_STORAGE_KEY = 'sql_kependudukan_progress';
 const LAST_SESSION_KEY = `${STORAGE_NS}:last_session`;
@@ -360,11 +360,47 @@ function startApp(){
   if(!state.submitted) $('sqlInput').focus();
 }
 
-function renderAll(){renderTaskList();renderLesson();renderExplorer();renderProgress();updatePrompt();}
+function renderAll(){renderTaskList();renderLesson();renderTaskNav();renderExplorer();renderProgress();updatePrompt();}
+function setCurrentTask(taskId,{scroll=true}={}){
+  const idx=tasks.findIndex(t=>t.id===Number(taskId));
+  if(idx<0)return;
+  state.currentTask=tasks[idx].id;
+  state.hints[state.currentTask]=state.hints[state.currentTask]||0;
+  renderTaskList();
+  renderLesson();
+  renderTaskNav();
+  scheduleSave(120);
+  if(scroll){
+    const lesson=document.querySelector('.lesson');
+    if(lesson){
+      try{lesson.scrollTo({top:0,behavior:'smooth'});}catch(e){lesson.scrollTop=0;}
+      if(window.matchMedia('(max-width:760px)').matches){
+        setTimeout(()=>lesson.scrollIntoView({behavior:'smooth',block:'start'}),40);
+      }
+    }
+  }
+}
+function navigateTask(step){
+  const idx=tasks.findIndex(t=>t.id===state.currentTask);
+  if(idx<0)return;
+  const next=Math.max(0,Math.min(tasks.length-1,idx+step));
+  if(next===idx)return;
+  setCurrentTask(tasks[next].id);
+}
+function renderTaskNav(){
+  const idx=tasks.findIndex(t=>t.id===state.currentTask);
+  const pos=idx<0?0:idx;
+  const t=tasks[pos]||tasks[0];
+  if($('taskPosition'))$('taskPosition').textContent=`Soal ${pos+1} dari ${tasks.length}`;
+  if($('taskPositionTitle'))$('taskPositionTitle').textContent=t?.title||'';
+  if($('backTaskBtn'))$('backTaskBtn').disabled=pos<=0;
+  if($('nextTaskBtn'))$('nextTaskBtn').disabled=pos>=tasks.length-1;
+}
+
 function renderTaskList(){
   const reveal=state.mode!=='ujian'||state.submitted;
   $('taskList').innerHTML=tasks.map(t=>{const done=reveal&&state.completed[t.id];return `<button class="task-btn ${state.currentTask===t.id?'active':''} ${done?'done':''}" data-id="${t.id}"><span class="task-num">${done?'✓':t.id}</span><span class="task-title"><b>${esc(t.title)}</b><br><span style="color:#6f879d">${esc(t.section)}</span></span><span class="task-score">${state.mode==='ujian'&&!state.submitted?'•':t.points}</span></button>`}).join('');
-  document.querySelectorAll('.task-btn').forEach(b=>b.onclick=()=>{state.currentTask=Number(b.dataset.id);state.hints[state.currentTask]=state.hints[state.currentTask]||0;renderTaskList();renderLesson();save();});
+  document.querySelectorAll('.task-btn').forEach(b=>b.onclick=()=>setCurrentTask(Number(b.dataset.id)));
 }
 function renderLesson(){
   const t=getTask(); const h=state.hints[t.id]||0; const done=!!state.completed[t.id];
@@ -409,7 +445,7 @@ function printWelcome(){
   const out=$('terminalOutput');
   if(out.dataset.ready) return;
   out.dataset.ready='1';
-  out.innerHTML=`<div style="color:#67e8f9">MySQL Learning Terminal 1.3 — Sistem Kependudukan</div><div class="out-muted">Ketik HELP untuk daftar perintah. Gunakan <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> untuk menjalankan query.</div><div class="out-muted">Beberapa perintah dapat dijalankan sekaligus dengan pemisah titik koma (;).</div><div class="out-muted">Keamanan belajar aktif: UPDATE/DELETE tanpa WHERE akan diblokir.</div>`;
+  out.innerHTML=`<div style="color:#67e8f9">MySQL Learning Terminal 1.4 — Sistem Kependudukan</div><div class="out-muted">Ketik HELP untuk daftar perintah. Gunakan <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> untuk menjalankan query.</div><div class="out-muted">Beberapa perintah dapat dijalankan sekaligus dengan pemisah titik koma (;).</div><div class="out-muted">Keamanan belajar aktif: UPDATE/DELETE tanpa WHERE akan diblokir.</div>`;
 }
 function appendCommand(q){const d=document.createElement('div');d.className='out-command';d.innerHTML=`<span style="color:#5eead4">${esc(engine.activeDb?`mysql [${engine.activeDb}]>`:'mysql>')}</span> ${esc(q)}`;$('terminalOutput').appendChild(d)}
 function appendResult(res){
@@ -590,7 +626,7 @@ function checkProgress(q,res){
 }
 function autoAdvance(){
   if(state.mode==='ujian'&&!state.submitted)return;
-  const t=getTask();if(state.completed[t.id]&&t.id<18){setTimeout(()=>{state.currentTask=t.id+1;renderTaskList();renderLesson();save()},650)}
+  const t=getTask();if(state.completed[t.id]&&t.id<tasks.length){setTimeout(()=>setCurrentTask(t.id+1),650)}
 }
 
 function showHint(){if(state.mode==='ujian')return;const t=getTask();state.hints[t.id]=Math.min((state.hints[t.id]||0)+1,t.hints.length);renderLesson();save()}
@@ -644,7 +680,7 @@ function renderReview(){
   const box=$('reviewBox'); box.innerHTML='<h3 style="margin-top:20px">Pembahasan & Contoh Query</h3>'+tasks.map(t=>`<div class="review-item ${state.completed[t.id]?'done':''}"><b>Soal ${t.id} — ${esc(t.title)}</b> <span style="float:right;color:${state.completed[t.id]?'#4ade80':'#fbbf24'}">${state.completed[t.id]?'✓ Benar':'Belum selesai'}</span><p style="color:#9fb2c5;font-size:12px">${t.concept}</p><div class="syntax">${esc(t.solution)}</div></div>`).join('');
 }
 
-$('startBtn').onclick=startApp;$('runBtn').onclick=runQuery;$('clearBtn').onclick=()=>{clearTerminal();save()};$('hintBtn').onclick=showHint;$('resetBtn').onclick=resetAll;$('exportBtn').onclick=exportSQL;$('finishBtn').onclick=finish;
+$('startBtn').onclick=startApp;$('runBtn').onclick=runQuery;$('clearBtn').onclick=()=>{clearTerminal();save()};$('hintBtn').onclick=showHint;$('backTaskBtn').onclick=()=>navigateTask(-1);$('nextTaskBtn').onclick=()=>navigateTask(1);$('resetBtn').onclick=resetAll;$('exportBtn').onclick=exportSQL;$('finishBtn').onclick=finish;
 $('previewSelect').onchange=()=>{renderPreview();scheduleSave(150)};
 $('studentName').addEventListener('input',updateSavedSessionInfo);
 $('studentClass').addEventListener('input',updateSavedSessionInfo);

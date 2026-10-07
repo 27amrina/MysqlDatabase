@@ -1,3 +1,10 @@
+VERSI 1.4
+- Menambahkan tombol Back dan Next untuk berpindah soal lebih cepat.
+- Menampilkan indikator Soal X dari 18 dan judul soal aktif.
+- Tombol Back nonaktif pada soal pertama dan Next nonaktif pada soal terakhir.
+- Pada HP, navigasi dibuat sticky di bagian bawah agar mudah dijangkau.
+- Perpindahan soal tetap tersimpan otomatis ke LocalStorage.
+
 VERSI 1.2 - LOCALSTORAGE AUTOSAVE
 
 MEDIA INTERAKTIF SQL TERMINAL — SISTEM KEPENDUDUKAN

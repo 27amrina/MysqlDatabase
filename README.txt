@@ -43,3 +43,10 @@ Catatan:
 Simulator ini dirancang khusus untuk latihan soal Proyek Sistem Data Kependudukan dan mendukung subset SQL yang dibutuhkan oleh 18 soal. Ini bukan pengganti penuh server MySQL/MariaDB.
 
 Data identitas pada latihan bersifat fiktif.
+
+
+PERUBAHAN v1.3
+- Tombol Jalankan, Clear, dan Hint dipisahkan dari area input terminal.
+- Tombol dipindahkan ke bawah terminal agar area mengetik lebih lega.
+- Lebar area terminal diprioritaskan pada desktop/tablet dan memenuhi lebar layar pada ponsel.
+- Tinggi terminal ponsel diperbesar agar riwayat query lebih mudah dibaca.

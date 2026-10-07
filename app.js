@@ -409,7 +409,7 @@ function printWelcome(){
   const out=$('terminalOutput');
   if(out.dataset.ready) return;
   out.dataset.ready='1';
-  out.innerHTML=`<div style="color:#67e8f9">MySQL Learning Terminal 1.2 — Sistem Kependudukan</div><div class="out-muted">Ketik HELP untuk daftar perintah. Gunakan <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> untuk menjalankan query.</div><div class="out-muted">Beberapa perintah dapat dijalankan sekaligus dengan pemisah titik koma (;).</div><div class="out-muted">Keamanan belajar aktif: UPDATE/DELETE tanpa WHERE akan diblokir.</div>`;
+  out.innerHTML=`<div style="color:#67e8f9">MySQL Learning Terminal 1.3 — Sistem Kependudukan</div><div class="out-muted">Ketik HELP untuk daftar perintah. Gunakan <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> untuk menjalankan query.</div><div class="out-muted">Beberapa perintah dapat dijalankan sekaligus dengan pemisah titik koma (;).</div><div class="out-muted">Keamanan belajar aktif: UPDATE/DELETE tanpa WHERE akan diblokir.</div>`;
 }
 function appendCommand(q){const d=document.createElement('div');d.className='out-command';d.innerHTML=`<span style="color:#5eead4">${esc(engine.activeDb?`mysql [${engine.activeDb}]>`:'mysql>')}</span> ${esc(q)}`;$('terminalOutput').appendChild(d)}
 function appendResult(res){

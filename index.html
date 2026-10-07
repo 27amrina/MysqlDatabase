@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>SQL Terminal — Sistem Kependudukan</title>
+  <title>SQL Terminal v1.3 — Sistem Kependudukan</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -57,16 +57,17 @@
           <div class="term-entry">
             <div id="prompt" class="prompt">mysql&gt;</div>
             <textarea id="sqlInput" class="term-input" spellcheck="false" placeholder="Ketik perintah SQL di sini... (Ctrl+Enter untuk menjalankan)"></textarea>
-            <div class="term-actions">
-              <button id="runBtn" class="btn primary">Jalankan</button>
-              <button id="clearBtn" class="btn">Clear</button>
-              <button id="hintBtn" class="btn warn">Hint</button>
-            </div>
           </div>
           <div class="statusbar">
             <span id="dbStatus">DB: belum dipilih</span><span>•</span><span id="queryCount">0 query</span><span class="grow"></span><span id="saveStatus" class="save-status">● Belum tersimpan</span><span>•</span><span id="progressText">0/18</span>
           </div>
         </section>
+
+        <div class="term-actions" aria-label="Aksi terminal">
+          <button id="runBtn" class="btn primary">Jalankan Query</button>
+          <button id="clearBtn" class="btn">Clear</button>
+          <button id="hintBtn" class="btn warn">Hint</button>
+        </div>
 
         <div class="progress"><span id="progressBar"></span></div>
       </section>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SQL Terminal — Sistem Kependudukan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section id="startScreen" class="start-screen">
+    <div class="start-card">
+      <div class="brand"><div class="logo">▦</div><div>SQL Terminal <small>Proyek Sistem Data Kependudukan</small></div></div>
+      <h1>Belajar SQL seperti di terminal.</h1>
+      <p>Media interaktif praktik Basis Data untuk materi DDL, DML, UPDATE/DELETE, dan DQL. Seluruh data identitas di dalam latihan bersifat fiktif.</p>
+      <div class="feature-row">
+        <div class="feature"><b>⌨ Terminal Interaktif</b><span>Ketik satu atau beberapa perintah SQL, lalu baca hasil serta error seperti MySQL.</span></div>
+        <div class="feature"><b>🗃 Database Explorer</b><span>Lihat tabel, field, data, PK/FK, dan perubahan database secara langsung.</span></div>
+        <div class="feature"><b>✓ 18 Soal & Nilai</b><span>Validasi diperketat, progres tersimpan, dan file query dapat diekspor.</span></div>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Nama Siswa</label><input id="studentName" placeholder="Masukkan nama siswa"></div>
+        <div class="field"><label>Kelas</label><input id="studentClass" placeholder="Contoh: XI PPLG"></div>
+        <div class="field"><label>Mode</label><select id="mode"><option value="belajar">Mode Belajar</option><option value="latihan">Mode Latihan</option><option value="ujian">Mode Ujian</option></select></div>
+        <div class="field"><label>Sesi</label><select id="session"><option value="baru">Mulai sesi baru</option><option value="lanjut">Lanjutkan progres tersimpan</option></select></div>
+      </div>
+      <button id="startBtn" class="btn primary" style="width:100%;padding:13px">Mulai Praktik</button>
+      <div id="savedSessionInfo" class="saved-session-info">💾 Progres, database, query, dan jawaban tersimpan otomatis di LocalStorage browser ini.</div>
+      <p style="font-size:12px;margin-bottom:0">Tidak memerlukan XAMPP/Laragon atau internet. Data tetap tersedia setelah halaman ditutup atau browser dibuka kembali pada perangkat dan browser yang sama.</p>
+    </div>
+  </section>
+
+  <section id="app" class="app hidden">
+    <header class="topbar">
+      <div class="brand"><div class="logo">▦</div><div>SQL Terminal <small id="studentLabel">Kependudukan</small></div></div>
+      <div class="top-actions">
+        <span id="modePill" class="pill">Mode Belajar</span>
+        <span id="timerPill" class="pill">00:00</span>
+        <button id="exportBtn" class="btn">Ekspor .sql</button>
+        <button id="finishBtn" class="btn primary">Selesai</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="panel sidebar">
+        <div class="panel-head"><b>Materi & Soal</b><span id="scoreMini" class="pill">0/100</span></div>
+        <div class="panel-body"><div id="taskList" class="task-list"></div></div>
+      </aside>
+
+      <section class="center">
+        <article class="panel lesson">
+          <div id="lessonContent"></div>
+        </article>
+
+        <section class="terminal">
+          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">mysql — kependudukan learning terminal</span></div>
+          <div id="terminalOutput" class="terminal-output"></div>
+          <div class="term-entry">
+            <div id="prompt" class="prompt">mysql&gt;</div>
+            <textarea id="sqlInput" class="term-input" spellcheck="false" placeholder="Ketik perintah SQL di sini... (Ctrl+Enter untuk menjalankan)"></textarea>
+            <div class="term-actions">
+              <button id="runBtn" class="btn primary">Jalankan</button>
+              <button id="clearBtn" class="btn">Clear</button>
+              <button id="hintBtn" class="btn warn">Hint</button>
+            </div>
+          </div>
+          <div class="statusbar">
+            <span id="dbStatus">DB: belum dipilih</span><span>•</span><span id="queryCount">0 query</span><span class="grow"></span><span id="saveStatus" class="save-status">● Belum tersimpan</span><span>•</span><span id="progressText">0/18</span>
+          </div>
+        </section>
+
+        <div class="progress"><span id="progressBar"></span></div>
+      </section>
+
+      <aside class="panel right">
+        <div class="panel-head"><b>Database Explorer</b><button id="resetBtn" class="btn danger">Reset</button></div>
+        <div class="panel-body">
+          <div id="dbTree" class="dbtree"></div>
+          <div class="data-preview">
+            <select id="previewSelect"><option value="">Lihat data tabel...</option></select>
+            <div id="dataPreview" class="mini-table"></div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </section>
+
+  <div id="toast" class="toast hidden"></div>
+  <div id="finishModal" class="modal hidden"><div class="modal-card" id="finishContent"></div></div>
+
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
